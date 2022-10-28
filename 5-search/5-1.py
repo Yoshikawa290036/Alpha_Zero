@@ -39,3 +39,82 @@ class State:
         pieces = self.pieces.copy()
         pieces[action] = 1
         return State(self.enemy_piece, pieces)
+
+    def legal_actions(self):
+        actions = []
+        for i in range(9):
+            if self.pieces[i] == 0 and self.enemy_piece[i] == 0:
+                actions.append(i)
+        return actions
+
+    def is_first_player(self):
+        return self.piece_count(self.pieces) == self.piece_count(self.enemy_piece)
+
+    def __str__(self):
+        ox = ('o', 'x')if self.is_first_player() else ('x', 'o')
+        string = ''
+        for i in range(9):
+            if self.pieces[i] == 1:
+                string += ox[0]
+            elif self.enemy_piece[i] == 1:
+                string += ox[1]
+            else:
+                string += '-'
+            if i % 3 == 2:
+                string += '\n'
+        return string
+
+
+def random_action(state):
+    legal_actions = state.legal_actions()
+    return legal_actions[random.randint(0, len(legal_actions)-1)]
+
+
+def mini_max(state):
+    if state.is_lose():
+        return -1
+    if state.is_draw():
+        return 0
+    best_score = -float('inf')
+    for action in state.legal_actions():
+        score = -mini_max(state.next(action))
+        if score > best_score:
+            best_score = score
+    return best_score
+
+
+def mini_max_action(state):
+    best_action = 0
+    best_score = -float('inf')
+    string = ['', '']
+    for action in state.legal_actions():
+        score = -mini_max(state.next(action))
+        if score > best_score:
+            best_action = action
+            best_score = score
+
+        string[0] = '{}{:3d},'.format(string[0], action)
+        string[1] = '{}{:3d},'.format(string[1], score)
+    print('action : ', string[0], '\nscore : ', string[1], '\n')
+    return best_action
+
+
+def main():
+    state = State()
+    while True:
+        if state.is_done():
+            break
+
+        if state.is_first_player():
+            action = mini_max_action(state)
+        else:
+            action = random_action(state)
+
+        state = state.next(action)
+
+        print(state)
+        print()
+
+
+if __name__ == '__main__':
+    main()
