@@ -1,5 +1,5 @@
 import random
-
+import game5
 
 class State:
     def __init__(self, piece=None, enemy_piece=None):
@@ -100,7 +100,7 @@ def mini_max_action(state):
 
 
 def main():
-    state = State()
+    state = game5.State()
     while True:
         if state.is_done():
             break

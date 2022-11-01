@@ -1,5 +1,5 @@
 import Mini_Max
-
+import game5
 
 def mini_max_plus(state, limit):
     if state.is_lose():
@@ -55,15 +55,17 @@ def alpha_beta(state, alpha, beta):
 
 
 def main():
-    state = Mini_Max.State()
+    # state = Mini_Max.State()
+    state = game5.State()
     while True:
         if state.is_done():
             break
-
+        print('done1')
         if state.is_first_player():
             action = alpha_beta_action(state)
         else:
             action = Mini_Max.mini_max_action(state)
+        print('done2')
 
         state = state.next(action)
 
